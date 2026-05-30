@@ -45,7 +45,7 @@ open index.html
 
 ## 📬 Contact
 
-- 📧 Email: your.email@gmail.com
+- 📧 Email: rajeshsoyeda@gmail.com
 - 💼 LinkedIn: linkedin.com/in/rajeshsoyeda
 - 🐙 GitHub: github.com/rajeshsoyeda-hashsename
 
