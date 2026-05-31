@@ -2,7 +2,7 @@
 
 A modern, full-stack personal portfolio website built to showcase my projects, skills, and experience.
 
-🔗 **Live Site:** [rajeshsoyeda-hashsename.github.io/portfolio]rajeshsoyeda-hash.github.io/portfolio/
+🔗 **Live Site:** https://rajeshsoyeda-hash.github.io/portfolio/
 ---
 
 ## ✨ Features
