@@ -664,8 +664,19 @@ function initReveal() {
 function initSkillBars() {
   const bars = document.querySelectorAll('.skill-bar-fill');
   bars.forEach(b => {
-    b.style.width = b.dataset.w;
+    b.style.width = '0%';
   });
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        setTimeout(() => {
+          e.target.style.width = e.target.dataset.w;
+        }, 150);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  bars.forEach(b => obs.observe(b));
 }
 
 // ─── COUNTER ANIMATION ───
