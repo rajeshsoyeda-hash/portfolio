@@ -1001,6 +1001,94 @@ footer {
 .contact-sub { color: var(--muted); margin-top: 0.75rem; }
 .social-link-disabled { opacity: 0.6; cursor: not-allowed; }
 .footer-role { color: var(--muted); font-size: 0.8rem; }
+
+/* ── FILTER TABS ─────────────────────── */
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+.filter-tab {
+  padding: 7px 20px;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-body);
+  transition: all 0.25s;
+  letter-spacing: 0.04em;
+}
+.filter-tab:hover { border-color: var(--accent); color: var(--accent); }
+.filter-tab.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 20px rgba(124,106,245,0.35);
+}
+
+/* ── SKELETON LOADING ────────────────── */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg,
+    var(--bg3) 25%,
+    rgba(255,255,255,0.05) 50%,
+    var(--bg3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+.sk-thumb { height: 180px; border-radius: 0; }
+.sk-line { height: 10px; margin: 6px 0; border-radius: 6px; }
+.skeleton-card .project-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── REPO CARD ELEMENTS ──────────────── */
+.repo-stats-overlay {
+  position: absolute;
+  bottom: 10px; right: 10px;
+  display: flex;
+  gap: 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  z-index: 2;
+  background: rgba(0,0,0,0.55);
+  padding: 4px 10px;
+  border-radius: 100px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.lang-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.repo-lang-tag { display: inline-flex; align-items: center; gap: 5px; }
+
+/* ── API NOTICE ──────────────────────── */
+.api-notice {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--muted);
+}
+.api-notice-icon { font-size: 3rem; margin-bottom: 1rem; }
+.api-notice p { font-size: 0.9rem; line-height: 1.8; }
+
+/* ── CARD TILT ───────────────────────── */
+.project-card { transform-style: preserve-3d; }
 </style>
 </head>
 <body>
@@ -1238,6 +1326,19 @@ footer {
       Add Project
     </button>
   </div>
+  <!-- FILTER TABS -->
+  <div class="filter-tabs" id="filterTabs">
+    <button class="filter-tab active" data-tab="github" onclick="switchTab('github')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:5px"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      GitHub Repos
+    </button>
+    <button class="filter-tab" data-tab="custom" onclick="switchTab('custom')">
+      ✦ Custom Projects
+    </button>
+    <button class="filter-tab" data-tab="all" onclick="switchTab('all')">
+      ◈ All
+    </button>
+  </div>
   <div class="projects-grid" id="projectsGrid"></div>
 </section>
 
@@ -1428,73 +1529,67 @@ const DEFAULT_PROJECTS = [
   {
     id: 5, title: "LinkVault", category: "Full Stack",
     desc: "A bookmark manager with AI-powered tagging, full-text search, and browser extension. Built with a serverless Node.js backend on Vercel.",
-    tech: ["React", "Node.js", "MongoDB", "Vercel"],
-    emoji: "🔗", github: "#", live: "#", color: "#b07af5"
-  },
-  {
-    id: 6, title: "ChatPulse", category: "Full Stack",
-    desc: "Real-time group chat application with media sharing, emoji reactions, and read receipts. Uses WebSockets and Redis pub/sub.",
-    tech: ["React", "Socket.io", "Redis", "Express"],
-    emoji: "💬", github: "#", live: "#", color: "#4af5b8"
-  }
-];
-
-// Init DB
-if (!localStorage.getItem(DB_KEY)) {
-  dbSave(DEFAULT_PROJECTS);
-}
-
 // ─── TAG COLORS ───
 const TAG_COLORS = {
-  'React': { bg: 'rgba(124,106,245,0.15)', color: '#b07af5' },
-  'Node.js': { bg: 'rgba(74,245,184,0.15)', color: '#4af5b8' },
-  'Express': { bg: 'rgba(74,245,184,0.12)', color: '#3db896' },
-  'MongoDB': { bg: 'rgba(74,245,184,0.12)', color: '#4af5b8' },
-  'PostgreSQL': { bg: 'rgba(56,138,221,0.15)', color: '#85b7eb' },
-  'Python': { bg: 'rgba(245,201,74,0.15)', color: '#f5c94a' },
-  'Django': { bg: 'rgba(74,245,184,0.1)', color: '#4af5b8' },
-  'Stripe': { bg: 'rgba(124,106,245,0.1)', color: '#7c6af5' },
-  'Socket.io': { bg: 'rgba(245,122,158,0.1)', color: '#f57a9e' },
-  'Redis': { bg: 'rgba(245,90,90,0.1)', color: '#f56a6a' },
-  'Vercel': { bg: 'rgba(255,255,255,0.05)', color: '#aaa' },
-  'JavaScript': { bg: 'rgba(245,201,74,0.12)', color: '#f5c94a' },
-  'CSS3': { bg: 'rgba(56,138,221,0.12)', color: '#85b7eb' },
+  'React':      { bg: 'rgba(124,106,245,0.15)', color: '#b07af5' },
+  'Node.js':    { bg: 'rgba(74,245,184,0.15)',  color: '#4af5b8' },
+  'Express':    { bg: 'rgba(74,245,184,0.12)',  color: '#3db896' },
+  'MongoDB':    { bg: 'rgba(74,245,184,0.12)',  color: '#4af5b8' },
+  'PostgreSQL': { bg: 'rgba(56,138,221,0.15)',  color: '#85b7eb' },
+  'Python':     { bg: 'rgba(245,201,74,0.15)',  color: '#f5c94a' },
+  'Django':     { bg: 'rgba(74,245,184,0.1)',   color: '#4af5b8' },
+  'Stripe':     { bg: 'rgba(124,106,245,0.1)',  color: '#7c6af5' },
+  'Socket.io':  { bg: 'rgba(245,122,158,0.1)',  color: '#f57a9e' },
+  'Redis':      { bg: 'rgba(245,90,90,0.1)',    color: '#f56a6a' },
+  'Vercel':     { bg: 'rgba(255,255,255,0.05)', color: '#aaa'    },
+  'JavaScript': { bg: 'rgba(245,201,74,0.12)',  color: '#f5c94a' },
+  'CSS3':       { bg: 'rgba(56,138,221,0.12)',  color: '#85b7eb' },
 };
-
 function getTagStyle(t) {
   const s = TAG_COLORS[t.trim()] || { bg: 'rgba(255,255,255,0.07)', color: '#aaa' };
   return `background:${s.bg};color:${s.color}`;
 }
 
-// ─── RENDER PROJECTS ───
-function renderProjects() {
-  const projects = dbGet();
-  const grid = document.getElementById('projectsGrid');
-  grid.innerHTML = projects.map(p => `
-    <div class="project-card reveal" onclick="void(0)">
+// ─── RENDER CUSTOM CARD ────────────────────────────────────────────────────────
+function renderCustomCard(p) {
+  const ghIcon = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>`;
+  const liveIcon = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+  return `
+    <div class="project-card reveal">
       <div class="project-thumb" style="background:linear-gradient(135deg,${p.color}22,${p.color}11)">
         <span style="font-size:3.5rem;position:relative;z-index:1">${p.emoji || '🚀'}</span>
       </div>
       <div class="project-body">
         <div class="project-tags">
           <span class="tag" style="background:rgba(124,106,245,0.12);color:#b07af5">${p.category}</span>
-          ${(p.tech||[]).slice(0,2).map(t => `<span class="tag" style="${getTagStyle(t)}">${t}</span>`).join('')}
-          ${p.tech && p.tech.length > 2 ? `<span class="tag" style="background:rgba(255,255,255,0.05);color:#777">+${p.tech.length-2}</span>` : ''}
+          ${(p.tech||[]).slice(0,2).map(t=>`<span class="tag" style="${getTagStyle(t)}">${t}</span>`).join('')}
+          ${p.tech&&p.tech.length>2?`<span class="tag" style="background:rgba(255,255,255,0.05);color:#777">+${p.tech.length-2}</span>`:''}
         </div>
         <div class="project-title">${p.title}</div>
         <div class="project-desc">${p.desc}</div>
         <div class="project-links">
-          ${p.github ? `<a class="proj-link github" href="${p.github}" target="_blank">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-            Code</a>` : ''}
-          ${p.live ? `<a class="proj-link live" href="${p.live}" target="_blank">
-            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            Live</a>` : ''}
+          ${p.github&&p.github!='#'?`<a class="proj-link github" href="${p.github}" target="_blank" rel="noopener noreferrer">${ghIcon} Code</a>`:''}
+          ${p.live&&p.live!='#'?`<a class="proj-link live" href="${p.live}" target="_blank" rel="noopener noreferrer">${liveIcon} Live</a>`:''}
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+}
+
+// ─── RENDER CUSTOM PROJECTS ────────────────────────────────────────────────────
+function renderProjects() {
+  const projects = dbGet();
+  const grid = document.getElementById('projectsGrid');
+  if (projects.length === 0) {
+    grid.innerHTML = `
+      <div class="api-notice">
+        <div class="api-notice-icon">📂</div>
+        <p>No custom projects yet.<br>Click <strong>Add Project</strong> to add your first one!</p>
+      </div>`;
+    return;
+  }
+  grid.innerHTML = projects.map(p => renderCustomCard(p)).join('');
   initReveal();
+  initCardTilt();
 }
 
 // ─── MODAL ───
@@ -1515,7 +1610,7 @@ function closeModalOutside(e) {
 
 function addProject() {
   const title = document.getElementById('pTitle').value.trim();
-  const desc = document.getElementById('pDesc').value.trim();
+  const desc  = document.getElementById('pDesc').value.trim();
   if (!title || !desc) { showToast('Please fill Title and Description.', 'error'); return; }
 
   const techRaw = document.getElementById('pTech').value;
@@ -1523,23 +1618,20 @@ function addProject() {
   const colors = ['#7c6af5','#4af5b8','#f5c94a','#f57a9e','#b07af5','#85b7eb'];
 
   const project = {
-    id: Date.now(),
-    title,
-    desc,
-    tech,
+    id: Date.now(), title, desc, tech,
     category: document.getElementById('pCategory').value,
-    github: document.getElementById('pGithub').value || '#',
-    live: document.getElementById('pLive').value || '#',
-    emoji: document.getElementById('pEmoji').value || '🚀',
-    color: colors[Math.floor(Math.random() * colors.length)]
+    github:   document.getElementById('pGithub').value || '',
+    live:     document.getElementById('pLive').value || '',
+    emoji:    document.getElementById('pEmoji').value || '🚀',
+    color:    colors[Math.floor(Math.random() * colors.length)]
   };
 
   const projects = dbGet();
   projects.unshift(project);
   dbSave(projects);
-  renderProjects();
+  switchTab('custom');
   closeModal();
-  showToast('Project saved to database!', 'success');
+  showToast('Project saved!', 'success');
 }
 
 // ─── CONTACT ───
@@ -1625,6 +1717,21 @@ function animateCounters() {
   counters.forEach(c => obs.observe(c));
 }
 
+// ─── CARD TILT EFFECT ─────────────────────────────────────────────────────────
+function initCardTilt() {
+  document.querySelectorAll('.project-card:not(.skeleton-card)').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width  - 0.5) * 10;
+      const y = ((e.clientY - r.top)  / r.height - 0.5) * -10;
+      card.style.transform = `translateY(-6px) rotateX(${y}deg) rotateY(${x}deg)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+}
+
 // ─── ACTIVE NAV ───
 function initActiveNav() {
   const sections = document.querySelectorAll('section[id]');
@@ -1641,7 +1748,7 @@ function initActiveNav() {
 
 // ─── INIT ───
 document.addEventListener('DOMContentLoaded', () => {
-  renderProjects();
+  switchTab('github');   // loads GitHub repos by default
   initReveal();
   initSkillBars();
   animateCounters();
