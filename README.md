@@ -18,7 +18,7 @@ A modern, full-stack personal portfolio website built to showcase my projects, s
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
-|---|---|
+
 | Frontend | HTML5, CSS3, Vanilla JavaScript |
 | Animations | CSS Keyframes, Intersection Observer API |
 | Database | localStorage (JSON-based) |
@@ -28,6 +28,11 @@ A modern, full-stack personal portfolio website built to showcase my projects, s
 
 ## 📂 Project Structure
 
+- index.html — main portfolio layout and content
+- style.css — visual styling, layout, and animations
+- script.js — interactive effects and animations
+- README.md — project overview and setup instructions
+
 ---
 
 ## 🚀 Run Locally
@@ -36,8 +41,10 @@ A modern, full-stack personal portfolio website built to showcase my projects, s
 # Clone the repo
 git clone https://github.com/rajeshsoyeda-hashsename/portfolio.git
 
-# Open in browser
+# Open the project folder
 cd portfolio-main
+
+# Open the portfolio in your browser
 start index.html
 ```
 

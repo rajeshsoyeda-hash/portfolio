@@ -865,7 +865,9 @@
       initSkillBarAnimation();
       startHeroAnimations();
       initActiveNav();
-      window.addEventListener('scroll', startHeroAnimations, { passive: true });
+      window.addEventListener('scroll', () => {
+        startHeroAnimations();
+      }, { passive: true });
     });
   </script>
 </body>

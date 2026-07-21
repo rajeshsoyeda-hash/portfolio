@@ -117,6 +117,10 @@ function initSkillBarAnimation() {
 
     if (!skillsSection || !bars.length) return;
 
+    bars.forEach((bar) => {
+        bar.style.width = '0%';
+    });
+
     const observer = new IntersectionObserver((entries, obs) => {
         entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
@@ -125,7 +129,7 @@ function initSkillBarAnimation() {
                 const percentage = bar.dataset.percentage || '0%';
                 setTimeout(() => {
                     bar.style.width = percentage;
-                }, index * 100);
+                }, index * 120);
             });
 
             obs.disconnect();
