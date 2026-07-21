@@ -894,50 +894,6 @@ h2.section-title {
 
 .contact-form { text-align: left; }
 
-.contact-info-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
-  margin-top: 2.5rem;
-}
-
-.contact-card-item {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 1.25rem 1rem;
-  text-decoration: none;
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.25s ease;
-}
-
-.contact-card-item:hover {
-  border-color: var(--accent);
-  transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(124, 106, 245, 0.2);
-}
-
-.contact-card-icon { font-size: 1.5rem; }
-
-.contact-card-title {
-  font-size: 0.75rem;
-  color: var(--accent);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.contact-card-val {
-  font-size: 0.85rem;
-  color: var(--muted);
-  word-break: break-all;
-  font-weight: 500;
-}
-
 .submit-btn {
   width: 100%;
   padding: 0.9rem;
