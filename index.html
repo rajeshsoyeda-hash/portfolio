@@ -331,8 +331,21 @@
 <!-- FOOTER -->
 <footer>
   <span>© 2026 Rajesh Soyeda · Built with HTML, CSS, JS</span>
-  <span class="footer-role">Full Stack Developer</span>
+  <div>
+    <span class="footer-role">Full Stack Developer</span>
+    <button class="view-messages-btn" onclick="openInboxModal()" title="View received messages">Inbox 📨</button>
+  </div>
 </footer>
+
+<!-- INBOX MODAL -->
+<div class="modal-overlay" id="inboxOverlay" onclick="closeInboxOutside(event)">
+  <div class="modal">
+    <button class="close-btn" onclick="closeInboxModal()">✕</button>
+    <div class="modal-title">Received Messages 📨</div>
+    <div class="modal-sub">Messages sent from your contact form (also forwarded to your Gmail).</div>
+    <div class="inbox-list" id="inboxList"></div>
+  </div>
+</div>
 
 <!-- ADD PROJECT MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
@@ -617,24 +630,75 @@ function deleteProject(id) {
 function sendMessage() {
   const name = document.getElementById('cName').value.trim();
   const email = document.getElementById('cEmail').value.trim();
+  const subject = document.getElementById('cSubject').value.trim() || 'Portfolio Inquiry';
   const msg = document.getElementById('cMessage').value.trim();
   if (!name || !email || !msg) { showToast('Please fill all required fields.', 'error'); return; }
 
-  // Simulate API call
   const btn = document.querySelector('.submit-btn');
   btn.textContent = 'Sending...';
   btn.disabled = true;
 
+  // Save to Local DB Inbox
+  const msgs = JSON.parse(localStorage.getItem('portfolio_messages') || '[]');
+  msgs.unshift({ name, email, subject, msg, date: new Date().toLocaleString() });
+  localStorage.setItem('portfolio_messages', JSON.stringify(msgs));
+
+  // Send email to rajeshsoyeda@gmail.com via FormSubmit AJAX API
+  fetch("https://formsubmit.co/ajax/rajeshsoyeda@gmail.com", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify({ name, email, subject, message: msg })
+  }).catch(() => { /* silent fallback */ });
+
   setTimeout(() => {
-    // Save to "DB"
-    const msgs = JSON.parse(localStorage.getItem('portfolio_messages') || '[]');
-    msgs.push({ name, email, subject: document.getElementById('cSubject').value, msg, date: new Date().toISOString() });
-    localStorage.setItem('portfolio_messages', JSON.stringify(msgs));
     btn.textContent = 'Send Message →';
     btn.disabled = false;
     ['cName','cEmail','cSubject','cMessage'].forEach(id => document.getElementById(id).value = '');
-    showToast('Message sent successfully! I\'ll get back to you soon.', 'success');
-  }, 1200);
+    showToast('Message sent! Saved to Inbox & sent to your Email.', 'success');
+  }, 1000);
+}
+
+// ─── INBOX MODAL HANDLERS ───
+function openInboxModal() {
+  renderInboxMessages();
+  document.getElementById('inboxOverlay').classList.add('open');
+}
+
+function closeInboxModal() {
+  document.getElementById('inboxOverlay').classList.remove('open');
+}
+
+function closeInboxOutside(e) {
+  if (e.target.id === 'inboxOverlay') closeInboxModal();
+}
+
+function renderInboxMessages() {
+  const list = document.getElementById('inboxList');
+  const msgs = JSON.parse(localStorage.getItem('portfolio_messages') || '[]');
+  if (msgs.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted); text-align:center; padding:2rem 0;">No messages received yet.</div>';
+    return;
+  }
+  list.innerHTML = msgs.map((m, index) => `
+    <div class="inbox-item">
+      <div class="inbox-header">
+        <span class="inbox-sender">${escapeHtml(m.name)}</span>
+        <span class="inbox-date">${escapeHtml(m.date || '')}</span>
+      </div>
+      <div class="inbox-email">📧 ${escapeHtml(m.email)}</div>
+      <div class="inbox-subject">📌 ${escapeHtml(m.subject || 'No Subject')}</div>
+      <div class="inbox-body">${escapeHtml(m.msg)}</div>
+      <button class="inbox-del-btn" onclick="deleteMessage(${index})">🗑️ Delete</button>
+    </div>
+  `).join('');
+}
+
+function deleteMessage(index) {
+  let msgs = JSON.parse(localStorage.getItem('portfolio_messages') || '[]');
+  msgs.splice(index, 1);
+  localStorage.setItem('portfolio_messages', JSON.stringify(msgs));
+  renderInboxMessages();
+  showToast('Message deleted.', 'error');
 }
 
 // ─── TOAST ───
