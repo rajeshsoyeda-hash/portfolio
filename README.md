@@ -2,7 +2,7 @@
 
 A modern, full-stack personal portfolio website built to showcase my projects, skills, and experience.
 
-🔗 **Live Site:** https://rajeshsoyeda-hash.github.io/portfolio/
+🔗 **Live Site:** <https://rajeshsoyeda-hash.github.io/portfolio/>
 ---
 
 ## ✨ Features
@@ -27,6 +27,7 @@ A modern, full-stack personal portfolio website built to showcase my projects, s
 ---
 
 ## 📂 Project Structure
+
 ---
 
 ## 🚀 Run Locally
@@ -36,15 +37,15 @@ A modern, full-stack personal portfolio website built to showcase my projects, s
 git clone https://github.com/rajeshsoyeda-hashsename/portfolio.git
 
 # Open in browser
-cd portfolio
-open index.html
+cd portfolio-main
+start index.html
 ```
 
 ---
 
 ## 📬 Contact
 
-- 📧 Email: rajeshsoyeda@gmail.com
+- 📧 Email: <rajeshsoyeda@gmail.com>
 - 💼 LinkedIn: linkedin.com/in/rajeshsoyeda
 - 🐙 GitHub: github.com/rajeshsoyeda-hashsename
 
